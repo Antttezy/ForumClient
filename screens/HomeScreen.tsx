@@ -1,18 +1,14 @@
 import { StyleSheet, Text, View } from "react-native"
+import HomeBar from "../components/HomeBar"
+import HomeContent from "../components/HomeContent"
 import { useRedux } from "../redux/store"
 
 export default function HomeScreen() {
-    const state = useRedux()
-
-    if (!state.userLoaded || !state.user) {
-        return (
-            <View style={styles.container}><Text>Loading ...</Text></View>
-        )
-    }
 
     return (
         <View style={styles.container}>
-            <Text>Welcome {state.user.nickname}</Text>
+            <HomeContent />
+            <HomeBar />
         </View>
     )
 }
@@ -22,7 +18,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: '#efefef'
     }
 })
