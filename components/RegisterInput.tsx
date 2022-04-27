@@ -1,14 +1,94 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import Toast from "react-native-root-toast";
+import { useDispatch } from "react-redux";
+import { ForumUser } from "../lib/forumUser";
+import { isAction, loginAction, registerAction } from "../redux/actions";
+import { AppDispatch } from "../redux/store";
 
 export default function RegisterInput() {
     const [usernameActive, setUsernameActive] = useState(false)
+    const [emailActive, setEmailActive] = useState(false)
     const [passwordActive, setPasswordActive] = useState(false)
     const [repeatActive, setRepeatActive] = useState(false)
+    const [registerDisabled, setRegisterDisabled] = useState(false)
+
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [repeat, setRepeat] = useState('')
 
     const usernameStyle = usernameActive ? { ...styles.input, ...styles.inputActive } : styles.input
+    const emailStyle = emailActive ? { ...styles.input, ...styles.inputActive } : styles.input
     const passwordStyle = passwordActive ? { ...styles.input, ...styles.inputActive } : styles.input
     const repeatStyle = repeatActive ? { ...styles.input, ...styles.inputActive } : styles.input
+
+    const dispatch = useDispatch<AppDispatch>()
+
+    async function login(username: string, password: string) {
+        try {
+
+            const loginResult = await loginAction(username, password)
+
+            if (isAction<string>(loginResult)) {
+
+                dispatch(loginResult)
+
+            } else {
+                Toast.show(loginResult, {
+                    position: Toast.positions.BOTTOM,
+                    duration: Toast.durations.LONG
+                })
+            }
+
+        } catch (e) {
+
+        }
+    }
+
+    async function registerPress() {
+        try {
+
+            setRegisterDisabled(true)
+
+            if (email === '' || username === '' || password.length < 8 || repeat.length < 8) {
+                Toast.show('Fill all fields', {
+                    position: Toast.positions.BOTTOM,
+                    duration: Toast.durations.LONG
+                })
+
+                return
+            }
+
+            if (password !== repeat) {
+                Toast.show('Passwords does not match', {
+                    position: Toast.positions.BOTTOM,
+                    duration: Toast.durations.LONG
+                })
+
+                return
+            }
+
+            const registerResult = await registerAction(username, email, password)
+
+            if (isAction<ForumUser>(registerResult)) {
+
+                dispatch(registerResult)
+                await login(username, password)
+
+            } else {
+                Toast.show(registerResult, {
+                    position: Toast.positions.BOTTOM,
+                    duration: Toast.durations.LONG
+                })
+            }
+
+        } catch (e) {
+
+        } finally {
+            setRegisterDisabled(false)
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -20,7 +100,20 @@ export default function RegisterInput() {
                     textContentType="username"
                     style={usernameStyle}
                     onFocus={() => setUsernameActive(true)}
-                    onEndEditing={() => setUsernameActive(false)} />
+                    onEndEditing={() => setUsernameActive(false)}
+                    value={username}
+                    onChangeText={s => setUsername(s)} />
+
+                <TextInput
+                    placeholder="E-Mail"
+                    keyboardType="email-address"
+                    autoCompleteType="email"
+                    textContentType="emailAddress"
+                    style={emailStyle}
+                    onFocus={() => setEmailActive(true)}
+                    onEndEditing={() => setEmailActive(false)}
+                    value={email}
+                    onChangeText={s => setEmail(s)} />
 
                 <TextInput
                     placeholder="Password"
@@ -29,7 +122,9 @@ export default function RegisterInput() {
                     secureTextEntry={true}
                     style={passwordStyle}
                     onFocus={() => setPasswordActive(true)}
-                    onEndEditing={() => setPasswordActive(false)} />
+                    onEndEditing={() => setPasswordActive(false)}
+                    value={password}
+                    onChangeText={s => setPassword(s)} />
 
                 <TextInput
                     placeholder="Repeat password"
@@ -38,10 +133,15 @@ export default function RegisterInput() {
                     secureTextEntry={true}
                     style={repeatStyle}
                     onFocus={() => setRepeatActive(true)}
-                    onEndEditing={() => setRepeatActive(false)} />
+                    onEndEditing={() => setRepeatActive(false)}
+                    value={repeat}
+                    onChangeText={s => setRepeat(s)} />
 
             </View>
-            <Pressable style={styles.button}>
+            <Pressable
+                style={styles.button}
+                onPress={registerPress}
+                disabled={registerDisabled}>
                 <Text style={{ color: '#efefef' }}>Register</Text>
             </Pressable>
         </View>
