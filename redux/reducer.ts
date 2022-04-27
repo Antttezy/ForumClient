@@ -1,16 +1,21 @@
+import { ForumUser } from "../lib/forumUser"
 import { IReducerAction } from "./actions"
 
 
 export interface IState {
     isTokenLoaded: boolean,
     isAuthenticated: boolean,
-    accessToken: string | undefined
+    accessToken: string | undefined,
+    user: ForumUser | undefined,
+    userLoaded: boolean
 }
 
 const defaultState: IState = {
     isTokenLoaded: false,
     isAuthenticated: false,
-    accessToken: undefined
+    accessToken: undefined,
+    user: undefined,
+    userLoaded: false
 }
 
 export function reducer(state: IState = defaultState, action: IReducerAction<any>): IState {
@@ -31,6 +36,20 @@ export function reducer(state: IState = defaultState, action: IReducerAction<any
                 accessToken: action.payload,
                 isAuthenticated: true,
                 isTokenLoaded: true
+            }
+
+        case 'clearUser':
+            return {
+                ...state,
+                user: undefined,
+                userLoaded: true
+            }
+
+        case 'setUser':
+            return {
+                ...state,
+                user: action.payload,
+                userLoaded: true
             }
 
         default:
