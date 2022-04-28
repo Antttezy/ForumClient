@@ -1,14 +1,43 @@
 import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import Toast from "react-native-root-toast";
+import { useDispatch } from "react-redux";
+import { isAction, loginAction } from "../redux/actions";
+import { AppDispatch } from "../redux/store";
 
 
 export default function LoginInput({ navigation }: MaterialTopTabBarProps) {
     const [usernameActive, setUsernameActive] = useState(false)
     const [passwordActive, setPasswordActive] = useState(false)
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
 
     const usernameStyle = usernameActive ? { ...styles.input, ...styles.inputActive } : styles.input
     const passwordStyle = passwordActive ? { ...styles.input, ...styles.inputActive } : styles.input
+
+    const dispatch = useDispatch<AppDispatch>()
+
+    async function login() {
+        try {
+
+            const result = await loginAction(username, password)
+
+            if (!isAction(result)) {
+                Toast.show(result, {
+                    position: Toast.positions.BOTTOM,
+                    duration: Toast.durations.LONG
+                })
+
+                return
+            }
+
+            dispatch(result)
+
+        } catch (e) {
+
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -19,8 +48,10 @@ export default function LoginInput({ navigation }: MaterialTopTabBarProps) {
                     autoCompleteType="username"
                     textContentType="username"
                     style={usernameStyle}
+                    value={username}
                     onFocus={() => setUsernameActive(true)}
-                    onEndEditing={() => setUsernameActive(false)} />
+                    onEndEditing={() => setUsernameActive(false)}
+                    onChangeText={t => setUsername(t)} />
 
                 <TextInput
                     placeholder="Password"
@@ -28,11 +59,13 @@ export default function LoginInput({ navigation }: MaterialTopTabBarProps) {
                     textContentType="password"
                     secureTextEntry={true}
                     style={passwordStyle}
+                    value={password}
                     onFocus={() => setPasswordActive(true)}
-                    onEndEditing={() => setPasswordActive(false)} />
+                    onEndEditing={() => setPasswordActive(false)}
+                    onChangeText={t => setPassword(t)} />
 
             </View>
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={login}>
                 <Text style={{ color: '#efefef' }}>Login</Text>
             </Pressable>
             <View style={styles.registerWrapper}>
