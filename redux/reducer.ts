@@ -1,4 +1,5 @@
 import { ForumUser } from "../lib/forumUser"
+import { ForumPost } from "../lib/post"
 import { IReducerAction } from "./actions"
 
 
@@ -7,7 +8,9 @@ export interface IState {
     isAuthenticated: boolean,
     accessToken: string | undefined,
     user: ForumUser | undefined,
-    userLoaded: boolean
+    userLoaded: boolean,
+    posts: ForumPost[],
+    postsLoaded: boolean
 }
 
 const defaultState: IState = {
@@ -15,7 +18,9 @@ const defaultState: IState = {
     isAuthenticated: false,
     accessToken: undefined,
     user: undefined,
-    userLoaded: false
+    userLoaded: false,
+    posts: [],
+    postsLoaded: false
 }
 
 export function reducer(state: IState = defaultState, action: IReducerAction<any>): IState {
@@ -50,6 +55,43 @@ export function reducer(state: IState = defaultState, action: IReducerAction<any
                 ...state,
                 user: action.payload,
                 userLoaded: true
+            }
+
+        case 'fetchPosts':
+            return {
+                ...state,
+                postsLoaded: true,
+                posts: [...state.posts, ...action.payload]
+            }
+
+        case 'likePost':
+            return {
+                ...state,
+                posts: [...state.posts.map(p => {
+                    if (p.id !== action.payload)
+                        return p
+
+                    return {
+                        ...p,
+                        liked: true,
+                        likes: p.likes + 1
+                    }
+                })]
+            }
+
+        case 'likePostRetract':
+            return {
+                ...state,
+                posts: [...state.posts.map(p => {
+                    if (p.id !== action.payload)
+                        return p
+
+                    return {
+                        ...p,
+                        liked: false,
+                        likes: p.likes - 1
+                    }
+                })]
             }
 
         default:

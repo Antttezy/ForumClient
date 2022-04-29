@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native"
 import HomeBar from "../components/HomeBar"
 import HomeContent from "../components/HomeContent"
-import { useRedux } from "../redux/store"
 
 export default function HomeScreen() {
 
@@ -16,7 +15,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
         flexDirection: 'column',
         backgroundColor: '#efefef'
