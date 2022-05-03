@@ -94,6 +94,12 @@ export function reducer(state: IState = defaultState, action: IReducerAction<any
                 })]
             }
 
+        case 'createPost':
+            return {
+                ...state,
+                posts: [action.payload, ...state.posts]
+            }
+
         default:
             return state
     }

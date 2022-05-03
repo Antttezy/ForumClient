@@ -3,7 +3,7 @@ import { API_URL } from "../const/api";
 import { LoginResult } from "../lib/auth";
 import { ForumUser, ForumUserResult } from "../lib/forumUser";
 import { LikeResult } from "../lib/like";
-import { ForumPost, PostListResult } from "../lib/post";
+import { ForumPost, ForumPostResult, PostListResult } from "../lib/post";
 import { RegisterResult } from "../lib/register";
 import { isSuccess } from "../lib/result";
 
@@ -131,7 +131,7 @@ export async function fetchPostsAction(start: number, length: number, before: nu
 
         const result = resp.data
         console.log(result)
-        
+
         return {
             type: 'fetchPosts',
             payload: result
@@ -146,7 +146,7 @@ export async function fetchPostsAction(start: number, length: number, before: nu
 }
 
 export async function likePostAction(postId: number, accessToken: string): Promise<IReducerAction<number> | string> {
-    
+
     console.log('Like post')
     console.log(accessToken)
     try {
@@ -168,7 +168,7 @@ export async function likePostAction(postId: number, accessToken: string): Promi
             payload: postId
         }
 
-    } catch(e) {
+    } catch (e) {
         console.error(JSON.stringify(e))
         return 'Unexpected error'
     }
@@ -176,7 +176,7 @@ export async function likePostAction(postId: number, accessToken: string): Promi
 
 export async function likePostRetractAction(postId: number, accessToken: string): Promise<IReducerAction<number> | string> {
     console.log('No like post')
-    
+
     try {
 
         const resp = await axios.post<LikeResult>(`${API_URL}/likes/likePostRetract?id=${postId}`, undefined, {
@@ -196,7 +196,41 @@ export async function likePostRetractAction(postId: number, accessToken: string)
             payload: postId
         }
 
-    } catch(e) {
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return 'Unexpected error'
+    }
+}
+
+export async function addPostAction(description: string, text: string, accessToken: string): Promise<IReducerAction<ForumPost> | string> {
+
+    try {
+
+        const resp = await axios.post<ForumPostResult>(`${API_URL}/posts/create`, {
+            text,
+            description
+        }, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        const post = resp.data
+
+        if (!isSuccess(post)) {
+            return post.error
+        }
+
+        return {
+            type: 'createPost',
+            payload: {
+                ...post.result,
+                liked: false,
+                likes: 0
+            }
+        }
+
+    } catch (e) {
         console.error(JSON.stringify(e))
         return 'Unexpected error'
     }
