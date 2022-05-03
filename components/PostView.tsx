@@ -1,6 +1,8 @@
+import { NativeStackNavigatorProps, NativeStackScreenProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import Toast from "react-native-root-toast";
 import { useDispatch } from "react-redux";
+import { PostsBarProps } from "../navigation/posts";
 import { isAction, likePostAction, likePostRetractAction } from "../redux/actions";
 import { AppDispatch, useRedux } from "../redux/store";
 
@@ -8,7 +10,7 @@ type Props = {
     postId: number
 }
 
-export default function PostView({ postId }: Props) {
+export default function PostView({ postId, navigation }: Props & NativeStackScreenProps<PostsBarProps, 'List'>) {
 
     const state = useRedux()
     const post = state.posts.find(p => p.id === postId)
@@ -42,11 +44,17 @@ export default function PostView({ postId }: Props) {
         }
     }
 
+    function postPress() {
+        navigation.navigate('Post', {
+            postId: post!.id
+        })
+    }
+
     if (!post)
         return null
 
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={_ => postPress()}>
             <View style={styles.summary}>
                 <Text style={styles.author}>{post.author}</Text>
                 <Text style={styles.description}>{post.description}</Text>
@@ -58,7 +66,7 @@ export default function PostView({ postId }: Props) {
                 </Pressable>
                 <Text>{post.likes}</Text>
             </View>
-        </View>
+        </Pressable>
     )
 }
 
