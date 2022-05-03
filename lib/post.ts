@@ -2,8 +2,8 @@ import { Result } from "./result"
 
 export type ForumPost = {
     id: number,
-    description: string | undefined,
-    text: string,
+    description: string,
+    text: string | undefined,
     createdAt: string,
     likes: number,
     liked: boolean,
