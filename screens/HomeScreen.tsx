@@ -5,6 +5,7 @@ import AddPostButton from "../components/AddPostButton"
 import HomeBar from "../components/HomeBar"
 import HomeContent from "../components/HomeContent"
 import { PostsBarProps } from "../navigation/posts"
+import AddCommentScreen from "./AddCommentScreen"
 import AddPostScreen from "./AddPostScreen"
 import PostScreen from "./PostScreen"
 
@@ -21,6 +22,7 @@ export default function HomeScreen() {
                     <Stack.Screen name="List" component={PostList} options={listOptions} />
                     <Stack.Screen name="Post" component={PostScreen} options={postOptions} />
                     <Stack.Screen name="AddPost" component={AddPostScreen} options={newPostOptions} />
+                    <Stack.Screen name="AddComment" component={AddCommentScreen} options={newCommentOptions} />
                 </Stack.Navigator>
             </NavigationContainer>
         </View>
@@ -51,6 +53,11 @@ const postOptions: NativeStackNavigationOptions = {
 const newPostOptions: NativeStackNavigationOptions = {
     headerBackground: () => <View style={{ backgroundColor: '#efefef' }}></View>,
     headerTitle: 'New Post'
+}
+
+const newCommentOptions: NativeStackNavigationOptions = {
+    headerBackground: () => <View style={{ backgroundColor: '#efefef' }}></View>,
+    headerTitle: 'Comment'
 }
 
 const styles = StyleSheet.create({

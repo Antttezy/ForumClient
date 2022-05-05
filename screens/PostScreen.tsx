@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack/lib/types
 import axios from "axios"
 import { useEffect, useMemo, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
+import AddCommentButton from "../components/AddCommentButton"
 import CommentView from "../components/CommentView"
 import PostDetails from "../components/PostDetails"
 import { API_URL } from "../const/api"
@@ -11,7 +12,7 @@ import { isSuccess } from "../lib/result"
 import { PostsBarProps } from "../navigation/posts"
 import { useRedux } from "../redux/store"
 
-export default function PostScreen({ route }: NativeStackScreenProps<PostsBarProps, 'Post'>) {
+export default function PostScreen({ navigation, route }: NativeStackScreenProps<PostsBarProps, 'Post'>) {
 
     const [post, setPost] = useState<ForumPost | undefined>()
     const [postLoading, setPostLoading] = useState(true)
@@ -97,15 +98,18 @@ export default function PostScreen({ route }: NativeStackScreenProps<PostsBarPro
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <PostDetails post={post} />
-            {commLoading ?
-                <View style={styles.centerer}>
-                    <Text>Loading comments</Text>
-                </View> :
-                comments.map(c => <CommentView key={c.id} comment={c} commentUpdated={updateComment} />)
-            }
-        </ScrollView>
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <PostDetails post={post} />
+                {commLoading ?
+                    <View style={styles.centerer}>
+                        <Text>Loading comments</Text>
+                    </View> :
+                    comments.map(c => <CommentView key={c.id} comment={c} commentUpdated={updateComment} />)
+                }
+            </ScrollView>
+            <AddCommentButton navigation={navigation} route={route} />
+        </View>
     )
 }
 

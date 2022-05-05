@@ -3,5 +3,6 @@ export type PostsBarProps = {
     Post: {
         postId: number
     },
-    AddPost: undefined
+    AddPost: undefined,
+    AddComment: undefined
 }
