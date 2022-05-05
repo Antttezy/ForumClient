@@ -4,5 +4,7 @@ export type PostsBarProps = {
         postId: number
     },
     AddPost: undefined,
-    AddComment: undefined
+    AddComment: {
+        postId: number
+    }
 }

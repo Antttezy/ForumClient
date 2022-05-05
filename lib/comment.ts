@@ -11,6 +11,8 @@ export type PostComment = {
     author: string
 }
 
+export type AddCommentResult = Result<PostComment, string>
+
 export type PostCommentList = PostComment[]
 
 export type LikeCommentResult = Result<string, string>
@@ -46,5 +48,29 @@ export async function likeCommentRetract(commentId: number, accessToken: string)
 
     } catch (e) {
         return false
+    }
+}
+
+export async function addComment(commentText: string, postId: number, accessToken: string): Promise<PostComment | string> {
+
+    try {
+
+        const response = await axios.post<AddCommentResult>(`${API_URL}/posts/${postId}/comments/create`, {
+            text: commentText
+        }, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        if (!isSuccess(response.data)) {
+            return response.data.error
+        }
+
+        return response.data.result
+
+    } catch (e) {
+        console.error(e)
+        return 'Unexpected error';
     }
 }

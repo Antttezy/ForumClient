@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { PostsBarProps } from "../navigation/posts";
 import { fetchPostsAction } from "../redux/actions";
@@ -51,8 +51,11 @@ export default function HomeContent({ navigation, route }: NativeStackScreenProp
 
     return (
         <View style={styles.wrapper}>
-            <ScrollView style={styles.postsScroll} contentContainerStyle={{ alignItems: 'center', padding: 5 }}>
+            <ScrollView style={styles.postsScroll} contentContainerStyle={{ alignItems: 'center', padding: 5}}>
                 {state.posts.map(post => <PostView key={post.id} postId={post.id} navigation={navigation} route={route} />)}
+                <Pressable style={styles.loadMoreBtn} onPress={_ => setStart(s => s + length)}>
+                    <Text style={styles.loadMoreText}>Load More</Text>
+                </Pressable>
             </ScrollView>
         </View>
     )
@@ -67,5 +70,13 @@ const styles = StyleSheet.create({
     },
     postsScroll: {
         flexDirection: 'column'
+    },
+    loadMoreBtn: {
+        height :50,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    loadMoreText: {
+        color: '#4596ff'
     }
 })

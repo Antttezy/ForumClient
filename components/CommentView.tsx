@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#fff',
         elevation: 10,
-        padding: 10
+        padding: 10,
+        marginVertical: 2
     },
     authorInfo: {
         flexDirection: "row",

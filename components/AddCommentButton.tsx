@@ -2,10 +2,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { PostsBarProps } from "../navigation/posts";
 
-export default function AddCommentButton({ navigation }: NativeStackScreenProps<PostsBarProps, 'Post'>) {
+export default function AddCommentButton({ navigation, route }: NativeStackScreenProps<PostsBarProps, 'Post'>) {
 
     return (
-        <Pressable style={styles.press} onPress={_ => navigation.navigate('AddComment')}>
+        <Pressable style={styles.press} onPress={_ => navigation.navigate('AddComment', {
+            postId: route.params.postId
+        })}>
             <Text style={styles.text}>
                 +
             </Text>
