@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         bottom: 0
     },
     roundLetterWrapper: {
-        backgroundColor: '#6063f7',
+        backgroundColor: '#343434',
         alignItems: 'center',
         justifyContent: 'center',
         width: 60,
